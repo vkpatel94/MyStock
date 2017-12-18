@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<meta charset="ISO-8859-1"></meta>
+	<title>Registration Form</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</h:head>
+
+<h:body>
+	<div class="container">
+		<div class="panel panel-info" style="margin-top: 5%; width: 50%; margin-left:25%">
+			<div class="panel-heading"
+				style="background: lightblue; color: primary">
+
+				<h1 class="panel-title" style="text-align: center">Register</h1>
+			</div>
+			<div class="panel-body">
+				<h:form>
+					<!--<div class="form-group">
+						<h:outputLabel>Register As:</h:outputLabel>
+						<h:selectOneMenu id="roles" value="#">
+							<f:selectItem itemValue="customer" itemLabel="User"/>
+							<f:selectItem itemValue="manager" itemLabel="Manager"/>	
+						</h:selectOneMenu>
+						</div> -->
+						
+							<div>
+								<ul class="nav nav-tabs">
+								  <li class="active"><a href="#">User</a></li>
+								  <li><a href="ManagerRegistration.xhtml">Manager</a></li>
+								</ul>
+							</div>
+					
+     					<div class="form-group" style="text-align: center;margin-top: 3%">
+							<h:outputLabel style="padding-right: 5px">First Name:</h:outputLabel>
+							<h:inputText  id="firstname" value="#{registration.regVO.firstname}"
+								required="true" requiredMessage="Field cannot be empty"  a:placeholder="First Name" >
+							 </h:inputText>
+							<br><h:message for="firstname"></h:message></br>
+						</div>
+	
+						<div class="form-group" style="text-align: center;margin-top: 3%">
+							<h:outputLabel style="padding-right: 5px">Last Name:</h:outputLabel>
+							<h:inputText id="lastname" value="#{registration.regVO.lastname}"
+								required="true" requiredMessage="Field cannot be empty"  a:placeholder="Last Name">
+							</h:inputText>
+							<br><h:message for="lastname"></h:message></br>				
+						</div>
+						
+						<div class="form-group" style="text-align: center;margin-top: 3%">
+							<h:outputLabel style="padding-right: 5px">Email Id:</h:outputLabel>
+							<h:inputText id="emailid" value="#{registration.regVO.email}"
+								required="true" requiredMessage="Field cannot be empty"  a:placeholder="Email Address">
+						 </h:inputText>
+							<br><h:message for="emailid"></h:message></br>
+						</div>
+						
+	
+						<div class="form-group" style="text-align: center;margin-top: 3%">
+							<h:outputLabel style="padding-right: 5px">Username:</h:outputLabel>
+							<h:inputText id="username" value="#{registration.regVO.username}"
+								required="true" requiredMessage="Field cannot be empty" a:placeholder="Username">
+							 </h:inputText>
+						    <br><h:message for="username"></h:message></br>
+						</div>
+	
+						<div class="form-group" style="text-align: center; margin-top: 3%">
+							<h:outputLabel style="padding-right: 5px">Password:</h:outputLabel>
+							<h:inputSecret id="password" value="#{registration.regVO.password}"
+								required="true" requiredMessage="Field cannot be empty"  a:placeholder="Password">
+							 </h:inputSecret>
+							<br><h:message for="password"></h:message></br>
+						</div>
+	
+						<div class="form-group" style="text-align: center">
+							<h:commandButton  value="Submit" action="#{registration.reguser}" />
+						</div>
+						
+						<hr>
+						<div class="form-group" style="text-align: center">
+				            <h>Already have an account?</h>
+				            <a href="index.xhtml">Sign In</a>
+            			</div>
+            			</hr>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</h:body>
+
+</html>

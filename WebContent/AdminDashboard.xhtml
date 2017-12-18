@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+      
+<h:head>
+<title>Admin Dashboard</title>  
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"></link>  
+</h:head> 
+ 
+<h:body>  
+	<h:form>
+	
+	<h1>Welcome Admin</h1>   
+	<!--   <span style="float:right;margin-bottom:  20px; margin-right: 10px"><h:link value="Logout" outcome="index" style="text-align: right;margin-bottom:  5px; margin-right: 5px"/></span>  -->
+	<h:commandButton action = "#{adminlogin.logout}" value="Log Out" class="btn btn-primary btn-sm" style="float: right;margin-bottom:  20px; margin-right: 10px"> </h:commandButton>
+	
+	<h:commandButton value="List of Managers" action="#{managerlogin.manager}" styleClass="btn btn-primary" style="margin-left: 20px" />
+	 
+	 
+		<h:dataTable binding="#{table}" value="#{managerlogin.apVO}" class="table table-striped table-hover table-bordered">  
+		
+		<h:column>  
+			<f:facet name="header">ID</f:facet>  
+			<h:outputText value="#{managerlogin.apVO.mid}"/>  
+		</h:column> 
+		 
+		<h:column>  
+			<f:facet name="header">Username</f:facet>  
+			<h:outputText value="#{managerlogin.apVO.username}"/>  
+		</h:column>  
+		
+		<h:column>  
+			<f:facet name="header">Email ID</f:facet>  
+			<h:outputText value="#{managerlogin.apVO.email}"/>  
+		</h:column>  
+		  
+		<h:column>  
+			<f:facet name="header">Approve</f:facet>  
+			<h:commandButton action = "#{user.edit(u.id)}" value="Approve" class="btn btn-primary" />    
+		</h:column> 
+		 
+		<h:column>  
+			<f:facet name="header">Decline</f:facet>  
+			<h:commandButton action = "#{user.delete(u.id)}" value="Decline" class="btn btn-danger" />   
+		</h:column>  
+		</h:dataTable>  
+		  
+	</h:form>  
+	
+</h:body>  
+</html>  
