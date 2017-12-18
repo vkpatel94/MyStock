@@ -10,6 +10,7 @@ public class ManagerLoginVO {
 	public String lastname;
 	public String email;
 	public String commission;
+	public String approved;
 	public int mid;
 	
 	
@@ -56,6 +57,13 @@ public class ManagerLoginVO {
 		this.mid = mid;
 	}
 	
+	
+	public String getApproved() {
+		return approved;
+	}
+	public void setApproved(String approved) {
+		this.approved = approved;
+	}
 	public void refresh() {
 		this.mid=(Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("mid");
 		this.firstname=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("firstname");
@@ -64,7 +72,7 @@ public class ManagerLoginVO {
 		this.commission= (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("commission");
 		this.username=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("username");
 		this.password=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("password");
-		
+		this.approved=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("approved");
 	}
 
 }

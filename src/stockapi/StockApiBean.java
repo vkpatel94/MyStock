@@ -212,9 +212,9 @@ public class StockApiBean {
             Statement statement = con.createStatement();
             
             //get userid
-            Integer uid = Integer.parseInt((String) FacesContext.getCurrentInstance()
+            Integer uid = (Integer) FacesContext.getCurrentInstance()
                     .getExternalContext()
-                    .getSessionMap().get("uid"));
+                    .getSessionMap().get("uid");
             
             System.out.println(uid);
             System.out.println("symbol:" + symbol);
@@ -242,9 +242,9 @@ public class StockApiBean {
             Statement statement = con.createStatement();
             
             //get userid
-            Integer uid = Integer.parseInt((String) FacesContext.getCurrentInstance()
+            Integer uid = (Integer) FacesContext.getCurrentInstance()
                     .getExternalContext()
-                    .getSessionMap().get("uid"));
+                    .getSessionMap().get("uid");
             
 //            System.out.println(uid);
 //            System.out.println("symbol:" + symbol);
@@ -261,56 +261,54 @@ public class StockApiBean {
     }
     
     public String viewWatchlist() throws MalformedURLException, IOException {
-        try {
+        
 
-        	String uid = (String) FacesContext.getCurrentInstance()
+        	Integer uid = (Integer) FacesContext.getCurrentInstance()
                     .getExternalContext()
                     .getSessionMap().get("uid");
-            
+        	System.out.println("uid  "+uid);
+         try {
             Connection con = dbconnection.Open();
-            PreparedStatement statement =  con.prepareStatement("SELECT * FROM watchlist where uid = ?");
-            statement.setString(1, uid);
+            PreparedStatement statement =  con.prepareStatement("SELECT * FROM watchlist where uid = uid");
+            
             int i=0;
             //get userid
+            String close="";
             
             System.out.println(uid);
 //            System.out.println("symbol:" + symbol);
             ResultSet rs = statement.executeQuery();
-            
-//            String symbol = rs.getString("stock_symbol");
-//            String interval = 1 min;
-//            String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=" + interval + "&apikey=" + API_KEY;
-//            
-//            this.table3Markup += "URL::: <a href='" + url + "'>Data Link</a><br>";
-//            InputStream inputStream = new URL(url).openStream();
-//
-//            // convert the json string back to object
-//            JsonReader jsonReader = Json.createReader(inputStream);
-//            JsonObject mainJsonObj = jsonReader.readObject();
-//            for(String key : mainJsonObj.keySet()) {
-//            	if (key.equals("Meta Data")) {
-//
-//            		JsonObject jsob = (JsonObject) mainJsonObj.get(key);            	
-//            }
-//            	else {
-//            		JsonObject dataJsonObj = mainJsonObj.getJsonObject(key);
-//            		
-//            		  for(String subKey : dataJsonObj.keySet())
-//                      {
-//            			  JsonObject subJsonObj = dataJsonObj.getJsonObject(subKey);
-//            			  this.table3Markup += "<tr>"+"<td>"+ subJsonObj.getString("4. close") +"</td>";
-//                      }
-//            	}
-//            		
-//            }
-            	 
             this.table3Markup += "";
         	this.table3Markup += "<table class='table table-hover'>";
             this.table3Markup += "<thead><tr><th>Number</th><th>Stock Symbol</th><th>Close</th></tr></thead>";
             this.table3Markup+="<tbody>";
+           
             while(rs.next()) {
-            	System.out.println("Stock number:"+rs.getString("stock_symbol"));
-                this.table3Markup += "<tr>"+"<td>"+i+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>";
+            String symbol = rs.getString("stock_symbol");
+            String interval = "1min";
+            String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=" + interval + "&apikey=" + API_KEY;
+//            
+//            this.table3Markup += "URL::: <a href='" + url + "'>Data Link</a><br>";
+            InputStream inputStream = new URL(url).openStream();
+//
+//            // convert the json string back to object
+            JsonReader jsonReader = Json.createReader(inputStream);
+            JsonObject mainJsonObj = jsonReader.readObject();
+            for(String key : mainJsonObj.keySet()) {
+            	if (key.equals("Time Series (1min)")) {
+            		JsonObject dataJsonObj = mainJsonObj.getJsonObject(key);
+            		
+            		  for(String subKey : dataJsonObj.keySet())
+                      {
+            			  JsonObject subJsonObj = dataJsonObj.getJsonObject(subKey);
+            			  close=subJsonObj.getString("4. close");
+            			  break;
+                      }
+            	}
+//            		
+            }
+            	 
+               this.table3Markup += "<tr>"+"<td>"+i+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+close+"</td>";
             	i++;
             }
             this.table3Markup+="</tr>";
@@ -318,22 +316,25 @@ public class StockApiBean {
 //            statement.close();
 //            con.close();
 //            FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully added to watchlist",""));
+//            dbconnection.Close();
+            return "watchlist";
         } catch (SQLException e) {
             e.printStackTrace();
+            return "";
         }
-        return "watchlist";
+        
     }
     
     public String myStocklist(){
         try {
 
-        	String uid = (String) FacesContext.getCurrentInstance()
+        	Integer uid = (Integer) FacesContext.getCurrentInstance()
                     .getExternalContext()
                     .getSessionMap().get("uid");
             
             Connection con = dbconnection.Open();
-            PreparedStatement statement =  con.prepareStatement("SELECT * FROM purchase where uid = ?");
-            statement.setString(1, uid);
+            PreparedStatement statement =  con.prepareStatement("SELECT * FROM purchase where uid = "+uid);
+//            statement.setString(1, uid);
             int i=0;
             //get userid
             
@@ -347,8 +348,10 @@ public class StockApiBean {
             this.table4Markup += "<thead><tr><th>Number</th><th>Stock Symbol</th><th>Qty</th><th>Sell</th></tr></thead>";
             this.table4Markup+="<tbody>";
             while(rs.next()) {
-            	System.out.println("Stock number:"+rs.getString("stock_symbol"));
-                this.table4Markup += "<tr>"+"<td>"+i+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+rs.getString("qty")+"</td>"+"<td><a class='btn btn-success' href='" + path + "/faces/SellStock.xhtml?symbol=" + rs.getString("stock_symbol") + "&qty=" + rs.getInt("qty") + "'>Sell Stock</a></td>";
+            	System.out.println("Stock symbol:"+rs.getString("stock_symbol"));
+            	System.out.println("Qty:"+rs.getInt("qty"));
+                this.table4Markup += "<tr>"+"<td>"+i+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+rs.getString("qty")+"</td>";
+            	this.table4Markup += "<td><a class='btn btn-success' href='" + path + "/faces/SellStock.xhtml?symbol=" + rs.getString("stock_symbol") + "&qty=" + rs.getInt("qty") + "'>Sell Stock</a></td>";
                 
             	i++;
             }

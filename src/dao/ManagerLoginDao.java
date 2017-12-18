@@ -12,7 +12,7 @@ import vo.LoginVO;
 import vo.ManagerLoginVO;
 
 public class ManagerLoginDao {
-	ArrayList<ManagerLoginVO> managerauth;
+	ArrayList managerauth;
 Connection con = dbconnection.Open();
 	
 	PreparedStatement p;
@@ -68,14 +68,17 @@ Connection con = dbconnection.Open();
 //            System.out.println("symbol:" + symbol);
             ResultSet rs = statement.executeQuery();
            
-            while(rs.next()) 
-            {
+            while(rs.next()) {
+            	if(rs.getInt("approved")==0) {
             	System.out.println("Manager Id:"+rs.getInt("mid"));
             	ap.setMid(rs.getInt("mid"));
             	ap.setUsername(rs.getString("username"));
             	ap.setEmail(rs.getString("email"));
+//            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("mid", rs.getString("mid"));
+//            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("username", rs.getString("username"));
+//            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("email", rs.getString("email"));
             	managerauth.add(ap);
-            	
+            	}
             }
             System.out.println(managerauth);
         }
@@ -164,6 +167,31 @@ Connection con = dbconnection.Open();
 		}  
 		return false;    
 	}  
- 
+	
+	public boolean approve(ManagerLoginVO apd){  
+		//int result = 0;  
+		try{   
+		
+			int mid =  (Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("mid");
+			System.out.println("In update method:"+mid);
+		
+		Connection con = dbconnection.Open();	 
+		PreparedStatement p;
+		String sql = ("UPDATE manager set approved=? where mid="+mid);
+		p = con.prepareStatement(sql);    
+	   
+		p.setInt(1, 1);
+		p.executeUpdate();  
+//		con.close(); 
+//		dbconnection.Close();
+		return true;
+	
+		}
+		
+		catch(Exception e){  
+		e.printStackTrace();  
+		}  
+		return false;
+	}
 
 }

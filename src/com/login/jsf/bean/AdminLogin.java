@@ -71,37 +71,6 @@ public class AdminLogin {
 		return "AdminLogin";
 	}  
 	
-	public ArrayList managerList(){
-        try {
-        	
-            Connection con = dbconnection.Open();
-            PreparedStatement statement =  con.prepareStatement("SELECT * FROM manager");
-//            statement.setString(1, mid);
-            int i=0;
-            //get userid
-            
-
-//            System.out.println("symbol:" + symbol);
-            ResultSet rs = statement.executeQuery();
-           
-            while(rs.next()) {
-            	
-            	mlist.setMid(rs.getInt("mid"));
-            	mlist.setUsername(rs.getString("username"));
-            	mlist.setEmail(rs.getString("email"));
-            	managerList.add(mlist);
-            	
-            }
-            	 
-            
-//           
-//            FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully added to watchlist",""));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-		return managerList;
-    }
-	
 	public void logout() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         FacesContext.getCurrentInstance().getExternalContext().redirect("AdminLogin.xhtml");

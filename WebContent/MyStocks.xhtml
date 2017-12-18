@@ -4,7 +4,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>TODO supply a title</title>
+        <title>User Stock List</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
         <!-- Bootstrap core CSS -->
@@ -26,7 +26,7 @@
                        		    </h1>
                             </h:panelGroup>
                         </span>  
-                        <span style="float:right;"><h:link value="Logout" outcome="index" style="text-align: right;"/></span>
+                        <h:commandButton action = "#{login.logout}" value="Log Out" class="btn btn-primary btn-sm" style="float: right;margin-bottom:  20px"> </h:commandButton>
                     </div>
                 </div>
             </h:form>

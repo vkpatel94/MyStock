@@ -27,6 +27,8 @@ public class ManagerLogin {
 	
 	ManagerLoginVO apVO = new ManagerLoginVO();
 	
+	ManagerLoginVO app = new ManagerLoginVO();
+	
 	ManagerLoginDao access = new ManagerLoginDao();
 	
 
@@ -54,6 +56,14 @@ public class ManagerLogin {
 
 	public void setApVO(ManagerLoginVO apVO) {
 		this.apVO = apVO;
+	}
+
+	public ManagerLoginVO getApp() {
+		return app;
+	}
+
+	public void setApp(ManagerLoginVO app) {
+		this.app = app;
 	}
 
 	public String SuccessLogin()
@@ -110,6 +120,16 @@ public class ManagerLogin {
 		e.printStackTrace();
 	}
 }
+	
+	public void approvemanager() {
+		try {
+			ManagerLoginDao approved = new ManagerLoginDao();
+			boolean x = approved.approve(app);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	
