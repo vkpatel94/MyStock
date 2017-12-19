@@ -44,16 +44,32 @@ public class StockApiBean {
     private String symbol;
     private double price;
     private int qty;
+    private int balance;
     private double amt;
+    private String id;
     private String table1Markup;
     private String table2Markup;
     private String table3Markup = "";
     private String table4Markup = "";
+    private String table5Markup = "";
 
     private String selectedSymbol;
     private List<SelectItem> availableSymbols;
 
-    public String getPurchaseSymbol() {
+  
+
+	public String getId() {
+		if (getRequestParameter("id") != null) {
+            id = getRequestParameter("id");
+	}
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getPurchaseSymbol() {
         if (getRequestParameter("symbol") != null) {
             symbol = getRequestParameter("symbol");
         }
@@ -71,8 +87,22 @@ public class StockApiBean {
         }
         return price;
     }
+    
+    
 
-    public void setPurchasePrice(double purchasePrice) {
+    public double getPrice() {
+    	if (getRequestParameter("price") != null) {
+            price = Double.parseDouble(getRequestParameter("price"));
+            System.out.println("price: " + price);
+    	}
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public void setPurchasePrice(double purchasePrice) {
         System.out.println("func setPurchasePrice()");  //check
     }
     
@@ -146,16 +176,16 @@ public class StockApiBean {
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
+    
+    public int getBalance() {
+		return balance;
+	}
 
-    public double getPrice() {
-        return price;
-    }
+	public void setBalance(int balance) {
+		this.balance = balance;
+	}
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public int getQty() {
+	public int getQty() {
         return qty;
     }
 
@@ -202,7 +232,16 @@ public class StockApiBean {
 	public void setTable4Markup(String table4Markup) {
 		this.table4Markup = table4Markup;
 	}
+	
+public String getTable5Markup() {
+		return table5Markup;
+	}
 
+	public void setTable5Markup(String table5Markup) {
+		this.table5Markup = table5Markup;
+	}
+
+	//	Method to purchase stock
 	public String createDbRecord(String symbol, double price, int qty, double amt) {
         try {
             //System.out.println("symbol: " + this.symbol + ", price: " + this.price + "\n");
@@ -224,6 +263,13 @@ public class StockApiBean {
             statement.executeUpdate("INSERT INTO `purchase` (`id`, `uid`, `stock_symbol`, `qty`, `price`, `amt`) "
                     + "VALUES (NULL,'" + uid + "','" + symbol + "','" + qty + "','" + price + "','" + amt +"')");
             
+            
+            
+            statement.executeUpdate("UPDATE user SET balance = balance - '"+amt+"' WHERE uid = '"+uid+"'");
+            
+            statement.executeUpdate("INSERT into `accounthistory` (`uid`, `stock_symbol`, `qty`, `price`, `amt`, `activity`) "
+            		+ "VALUES ('" + uid + "','" + symbol + "','" + qty + "','" + price + "','" + amt +"','" + "buy" +"')");
+            
 //            statement.close();
 //            con.close();
             FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully purchased stock",""));
@@ -233,6 +279,36 @@ public class StockApiBean {
         return "purchase";
     }
     
+//	Method to sell stock
+	public String createDbRecordSell(String id,String symbol, double price, int qty, double amt) {
+        try {
+            //System.out.println("symbol: " + this.symbol + ", price: " + this.price + "\n");
+            //System.out.println("qty: " + this.qty + ", amt: " + this.amt + "\n");
+
+            Connection con = dbconnection.Open();
+            Statement statement = con.createStatement();
+            
+//            //get userid
+            Integer uid = (Integer) FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .getSessionMap().get("uid");
+            
+            statement.executeUpdate("UPDATE purchase SET qty = qty - '"+qty+"', amt = amt - '"+price+"' where id = '"+id+"' ");
+            
+            statement.executeUpdate("UPDATE user SET balance = balance - '"+price+"' WHERE uid = '"+uid+"' ");
+            
+            statement.executeUpdate("INSERT into `accounthistory` (`uid`, `stock_symbol`, `qty`, `price`, `amt`, `activity`) "
+            		+ "VALUES ('" + uid + "','" + symbol + "','" + qty + "','" + price + "','" + amt +"','" + "sell" +"')");
+            
+//            statement.close();
+//            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "SellStock";
+    }
+	
+//	Method to add to user watchlist
     public String watchlistRecord() {
         try {
             //System.out.println("symbol: " + this.symbol + ", price: " + this.price + "\n");
@@ -245,12 +321,12 @@ public class StockApiBean {
             Integer uid = (Integer) FacesContext.getCurrentInstance()
                     .getExternalContext()
                     .getSessionMap().get("uid");
-            
+           
 //            System.out.println(uid);
 //            System.out.println("symbol:" + symbol);
             statement.executeUpdate("INSERT INTO watchlist (`id`, `uid`, `stock_symbol`) "
                     + "VALUES (NULL,'" + uid + "','" + selectedSymbol + "')");
-            
+           
 //            statement.close();
 //            con.close();
             FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully added to watchlist",""));
@@ -260,6 +336,36 @@ public class StockApiBean {
         return "UserDashboard";
     }
     
+//    Method to add to manager watchlist
+    public String managerWatchlistRecord() {
+        try {
+            //System.out.println("symbol: " + this.symbol + ", price: " + this.price + "\n");
+            //System.out.println("qty: " + this.qty + ", amt: " + this.amt + "\n");
+
+            Connection con = dbconnection.Open();
+            Statement statement = con.createStatement();
+            
+            //get userid
+            Integer mid = (Integer) FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .getSessionMap().get("mid");
+            System.out.println("Manager id for watchlist:"+mid);
+            
+//            System.out.println(uid);
+//            System.out.println("symbol:" + symbol);
+            statement.executeUpdate("INSERT INTO watchlist (`id`, `mid`, `stock_symbol`) "
+                    + "VALUES (NULL,'" + mid + "','" + selectedSymbol + "')");
+            
+//            statement.close();
+//            con.close();
+            FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully added to watchlist",""));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "ManagerDashboard";
+    }
+    
+//    Method to view user watchlist
     public String viewWatchlist() throws MalformedURLException, IOException {
         
 
@@ -325,6 +431,74 @@ public class StockApiBean {
         
     }
     
+    
+//    Method to view manager watchlist
+    public String viewManagerWatchlist() throws MalformedURLException, IOException {
+        
+
+    	Integer mid = (Integer) FacesContext.getCurrentInstance()
+                .getExternalContext()
+                .getSessionMap().get("mid");
+    	System.out.println("Manager id in view watchlist:  "+mid);
+     try {
+        Connection con = dbconnection.Open();
+        PreparedStatement statement =  con.prepareStatement("SELECT * FROM watchlist where mid = ?");
+        statement.setInt(1, mid);
+        
+        int i=0;
+        //get userid
+        String close="";
+        
+        System.out.println(mid);
+//        System.out.println("symbol:" + symbol);
+        ResultSet rs = statement.executeQuery();
+        this.table3Markup += "";
+    	this.table3Markup += "<table class='table table-hover'>";
+        this.table3Markup += "<thead><tr><th>Number</th><th>Stock Symbol</th><th>Recent Price</th></tr></thead>";
+        this.table3Markup+="<tbody>";
+       
+        while(rs.next()) {
+        String symbol = rs.getString("stock_symbol");
+        String interval = "1min";
+        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=" + interval + "&apikey=" + API_KEY;
+//        
+//        this.table3Markup += "URL::: <a href='" + url + "'>Data Link</a><br>";
+        InputStream inputStream = new URL(url).openStream();
+//
+//        // convert the json string back to object
+        JsonReader jsonReader = Json.createReader(inputStream);
+        JsonObject mainJsonObj = jsonReader.readObject();
+        for(String key : mainJsonObj.keySet()) {
+        	if (key.equals("Time Series (1min)")) {
+        		JsonObject dataJsonObj = mainJsonObj.getJsonObject(key);
+        		
+        		  for(String subKey : dataJsonObj.keySet())
+                  {
+        			  JsonObject subJsonObj = dataJsonObj.getJsonObject(subKey);
+        			  close=subJsonObj.getString("4. close");
+        			  break;
+                  }
+        	}
+//        		
+        }
+        	 
+           this.table3Markup += "<tr>"+"<td>"+i+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+close+"</td>";
+        	i++;
+        }
+        this.table3Markup+="</tr>";
+        this.table3Markup+="</tbody></table>";
+//        statement.close();
+//        con.close();
+//        FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully added to watchlist",""));
+//        dbconnection.Close();
+        return "watchlist";
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return "";
+    }
+    
+}
+    
     public String myStocklist() throws MalformedURLException, IOException{
         try {
 
@@ -346,15 +520,22 @@ public class StockApiBean {
             	 
             this.table4Markup += "";
         	this.table4Markup += "<table class='table table-hover'>";
-            this.table4Markup += "<thead><tr><th>Number</th><th>Stock Symbol</th><th>Qty</th><th>Sell</th></tr></thead>";
+            this.table4Markup += "<thead><tr><th>Stock Symbol</th><th>Qty</th><th>Sell</th></tr></thead>";
             this.table4Markup+="<tbody>";
             
             
             
             while(rs.next()) {
-//            	System.out.println("Stock symbol:"+rs.getString("stock_symbol"));
-//            	System.out.println("Qty:"+rs.getInt("qty"));
+            	
+//            	            	System.out.println("Stock symbol:"+rs.getString("stock_symbol"));
+            	System.out.println("Qty:"+rs.getInt("qty"));
+            	
+            	if(rs.getInt("qty")!=0) {
+            	int id = rs.getInt("id");
+            	double price = rs.getDouble("price");
             	String symbol = rs.getString("stock_symbol");
+            	int qty = rs.getInt("qty");
+            	System.out.println("Qty:"+rs.getInt("qty"));
                 String interval = "1min";
                 String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=" + interval + "&apikey=" + API_KEY;
 //                
@@ -375,16 +556,14 @@ public class StockApiBean {
                 			  break;
                           }
                 	}
-//                		
-                }
-            	
-            	
-            	
-                this.table4Markup += "<tr>"+"<td>"+i+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+rs.getString("qty")+"</td>";
-            	this.table4Markup += "<td><a class='btn btn-success' href='" + path + "/faces/SellStock.xhtml?symbol=" + rs.getString("stock_symbol") + "&price=" + close + "&qty=" + rs.getInt("qty") + "'>Sell Stock</a></td>";
+               		}
+ 
+                this.table4Markup += "<tr>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+ rs.getInt("qty") +"</td>";
+            	this.table4Markup += "<td><a class='btn btn-success' href='" + path + "/faces/SellStock.xhtml?symbol=" + rs.getString("stock_symbol") + "&price=" + close + "&qty=" + qty + "&id=" + id + "&price=" + price +"'>Sell Stock</a></td>";
                 
             	i++;
-            }
+            } 	
+          }
             
             
             
@@ -399,6 +578,54 @@ public class StockApiBean {
             e.printStackTrace();
         }
         return "MyStocks";
+    }
+    
+    
+    public String accountHistory() {
+        try {
+
+        	Integer uid = (Integer) FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .getSessionMap().get("uid");
+            
+            Connection con = dbconnection.Open();
+            PreparedStatement statement =  con.prepareStatement("SELECT * FROM accounthistory where uid = "+uid);
+
+            int i=0;
+         
+            System.out.println(uid);
+
+            ResultSet rs = statement.executeQuery();
+            String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+            	 
+            this.table5Markup += "";
+        	this.table5Markup += "<table class='table table-hover'>";
+            this.table5Markup += "<thead><tr><th>id</th><th>Stock Symbol</th><th>Qty</th><th>Price</th><th>Amount</th><th>Activity</th></tr></thead>";
+            this.table5Markup+="<tbody>";
+            
+            
+            
+            while(rs.next()) {
+            	int id = rs.getInt("id");
+            	double price = rs.getDouble("price");
+            	String symbol = rs.getString("stock_symbol");
+            	int qty = rs.getInt("qty");
+            	System.out.println("Qty:"+rs.getInt("qty"));
+                
+                this.table5Markup += "<tr>"+"<td>"+rs.getInt("id")+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+rs.getInt("qty")+"</td>"+"<td>"+rs.getDouble("price")+"</td>"+"<td>"+rs.getDouble("amt")+"</td>"+"<td>"+rs.getString("activity")+"</td>";
+            	
+                
+            	i++;
+            } 	
+            this.table5Markup+="</tr>";
+            this.table5Markup+="</tbody></table>";
+//            statement.close();
+//            con.close();
+//            FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully added to watchlist",""));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "AccountHistory";
     }
 
     public void installAllTrustingManager() {
@@ -426,8 +653,9 @@ public class StockApiBean {
         return;
     }
 
-    public void timeseries() throws MalformedURLException, IOException {
+    public void timeseries() throws MalformedURLException, IOException, SQLException {
 
+        
         installAllTrustingManager();
 
         //System.out.println("selectedItem: " + this.selectedSymbol);
@@ -438,6 +666,15 @@ public class StockApiBean {
 
         this.table1Markup += "URL::: <a href='" + url + "'>Data Link</a><br>";
         InputStream inputStream = new URL(url).openStream();
+        
+//        Integer uid = (Integer) FacesContext.getCurrentInstance()
+//                .getExternalContext()
+//                .getSessionMap().get("uid");
+//        
+//        Connection con = dbconnection.Open();
+//        PreparedStatement statement =  con.prepareStatement("SELECT * FROM user where uid = "+uid);       
+//        ResultSet rs = statement.executeQuery();
+//        System.out.println(rs.getInt("balance"));
 
         // convert the json string back to object
         JsonReader jsonReader = Json.createReader(inputStream);

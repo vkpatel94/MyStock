@@ -12,46 +12,31 @@ static Connection con = null;
 	
 	public static Connection Open() 
 	{
-		if (con != null)
+		
+		try{
+    		com.mysql.jdbc.jdbc2.optional.MysqlDataSource ds = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource();
+    		ds.setServerName(System.getenv("ICSI518_SERVER"));
+			ds.setPortNumber(Integer.parseInt(System.getenv("ICSI518_PORT")));
+			ds.setDatabaseName(System.getenv("ICSI518_DB"));
+			ds.setUser(System.getenv("ICSI518_USER"));
+			ds.setPassword(System.getenv("ICSI518_PASSWORD"));
+			con = ds.getConnection();
 			return con;
-	
-	
-	String url = "jdbc:mysql://localhost:3306/vp766231" ;
-	String username = "root";
-	String password = "root";
-	
-	try {
-		Class.forName("com.mysql.jdbc.Driver");
-
-		con = DriverManager.getConnection(url, username, password);
-		} 
-	
-	catch (Exception e) 
-	{
-		e.printStackTrace();
-	}
-	
-	return con;
-	
-}
-
-
-
-
-	public static void Close()
-	{
+    	}
+    	catch (Exception ex) {
+            System.out.println("Database.getConnection() Error -->" + ex.getMessage());
+            return null;
+        }
+ }
+public static void close(Connection con) {
+    try {
+    	con.close();
+    }
+    catch (Exception ex) {
+    }
+}   
 		
-		try 
-		{
-			con.close();
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-		
-	}
-	
+
 }
 
 

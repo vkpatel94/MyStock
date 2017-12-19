@@ -106,7 +106,7 @@ public class LoginDao {
 			p.setString(1, upd.getPassword());
 			p.executeUpdate();  
 //			con.close(); 
-			dbconnection.Close();
+//			dbconnection.Close();
 			return true;}
 		
 		
@@ -121,7 +121,7 @@ public class LoginDao {
 		p.setString(4, upd.getUsername());
 		p.executeUpdate();  
 //		con.close(); 
-		dbconnection.Close();
+//		dbconnection.Close();
 		return true;
 		
 		

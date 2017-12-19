@@ -32,14 +32,15 @@ Connection con = dbconnection.Open();
 		    p.setString(1, username);
 		    p.setString(2, password);
 		    ResultSet rs = p.executeQuery();
-		   
+		    if(rs.getString("approved")!= "0") {
 		if(rs.next())
-			{	
+			{
+			
 		 	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("mid", rs.getInt("mid"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("firstname", rs.getString("fname"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("lastname", rs.getString("lname"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("email", rs.getString("email"));
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("commission", rs.getString("commission"));
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("commission", rs.getInt("commission"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("username", rs.getString("username"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("password", rs.getString("password"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("approved", rs.getString("approved"));
@@ -53,7 +54,7 @@ Connection con = dbconnection.Open();
 					return false;
 				}
 		}
-		
+		}
 		catch (Exception e) {
 			//return false
 			e.printStackTrace();
@@ -82,8 +83,11 @@ Connection con = dbconnection.Open();
             	if(rs.getInt("approved")==0) {
             	System.out.println("Manager Id:"+rs.getInt("mid"));
             	ap.setMid(rs.getInt("mid"));
+            	ap.setFirstname(rs.getString("fname"));
+            	ap.setLastname(rs.getString("lname"));
             	ap.setUsername(rs.getString("username"));
             	ap.setEmail(rs.getString("email"));
+            	ap.setCommission(rs.getInt("commission"));
 //             	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("mid", rs.getString("mid"));
 //            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("username", rs.getString("username"));
 //            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("email", rs.getString("email"));
@@ -120,7 +124,7 @@ Connection con = dbconnection.Open();
 		    	mupd.setFirstname(rs.getString("fname"));
 		    	mupd.setLastname(rs.getString("lname"));
 		    	mupd.setEmail(rs.getString("email"));
-		    	mupd.setCommission(rs.getString("commission"));
+		    	mupd.setCommission(rs.getInt("commission"));
 		    	mupd.setUsername(rs.getString("username"));
 		    	mupd.setPassword(rs.getString("password"));
 		    }
@@ -149,8 +153,8 @@ Connection con = dbconnection.Open();
 		   
 			p.setString(1, mupd.getPassword());
 			p.executeUpdate();  
-//			con.close(); 
-			dbconnection.Close();
+			con.close(); 
+//			dbconnection.Close();
 			return true;}
 		
 		
@@ -162,11 +166,11 @@ Connection con = dbconnection.Open();
 		p.setString(1, mupd.getFirstname());
 		p.setString(2, mupd.getLastname());
 		p.setString(3, mupd.getEmail());
-		p.setString(4, mupd.getCommission());
+		p.setInt(4, mupd.getCommission());
 		p.setString(5, mupd.getUsername());
 		p.executeUpdate();  
-//		con.close(); 
-		dbconnection.Close();
+		con.close(); 
+//		dbconnection.Close();
 		return true;
 		
 		
@@ -228,5 +232,56 @@ Connection con = dbconnection.Open();
 		return false;
 	}
 
+	
+	public boolean SelectManager(int id){  
+		//int result = 0;  
+		try{   
+		
+			int uid =  (Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("uid");
+//			int mid =  ap.getMid();
+//			System.out.println("In approve method:"+mid);
+		System.out.println("Manager id during select:" +id);
+		Connection con = dbconnection.Open();	 
+		PreparedStatement p;
+		String sql = ("UPDATE user set mid = ? where uid = "+uid);
+		p = con.prepareStatement(sql);
+		p.setInt(1, id);   
+	   
+		p.executeUpdate();
+//		con.close(); 
+//		dbconnection.Close();
+		return true;
+	
+		}
+		
+		catch(Exception e){  
+		e.printStackTrace();  
+		}  
+		return false;
+	}
+	
+	public boolean request(int uid, int mid, int amount){  
+		//int result = 0;  
+		try{   
+		
+//			int uid =  (Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("uid");
+			Connection con = dbconnection.Open();	 
+			PreparedStatement p;
+			String sql = ("INSERT into request uid = ?, mid = ?, amount = ?");
+			p = con.prepareStatement(sql);    
+		   
+			p.setInt(1, uid);
+			p.setInt(2, mid);
+			p.setInt(3, amount);
+			p.executeUpdate();  
+		return true;
+	
+		}
+		
+		catch(Exception e){  
+		e.printStackTrace();  
+		}  
+		return false;
+	}
 
 }

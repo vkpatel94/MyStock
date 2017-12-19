@@ -9,10 +9,10 @@ public class ManagerLoginVO {
 	public String firstname;
 	public String lastname;
 	public String email;
-	public String commission;
+	public int commission;
 	public String approved;
 	public int mid;
-	
+	public int amount;
 	
 	public String getUsername() {
 		return username;
@@ -44,10 +44,13 @@ public class ManagerLoginVO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getCommission() {
+
+	
+	
+	public int getCommission() {
 		return commission;
 	}
-	public void setCommission(String commission) {
+	public void setCommission(int commission) {
 		this.commission = commission;
 	}
 	public int getMid() {
@@ -57,19 +60,26 @@ public class ManagerLoginVO {
 		this.mid = mid;
 	}
 	
-	
 	public String getApproved() {
 		return approved;
 	}
 	public void setApproved(String approved) {
 		this.approved = approved;
 	}
+	
+	public int getAmount() {
+		return amount;
+	}
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+	
 	public void refresh() {
 		this.mid=(Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("mid");
 		this.firstname=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("firstname");
 		this.lastname=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("lastname");
 		this.email=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("email");
-		this.commission= (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("commission");
+		this.commission= (Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("commission");
 		this.username=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("username");
 		this.password=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("password");
 		this.approved=(String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("approved");

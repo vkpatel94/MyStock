@@ -21,7 +21,7 @@ Connection con = dbconnection.Open();
 	    p.setString(1, reg.getFirstname());
 	    p.setString(2, reg.getLastname());
 	    p.setString(3, reg.getEmail());
-	    p.setString(4, reg.getCommission());
+	    p.setInt(4, reg.getCommission());
 	    p.setString(5, reg.getUsername());
 	    p.setString(6, reg.getPassword());
 	    

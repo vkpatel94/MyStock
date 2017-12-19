@@ -122,6 +122,17 @@ public class ManagerLogin {
 	}
 }
 	
+	public String managerlist() {
+		try {
+		ManagerLoginDao manAp = new ManagerLoginDao();
+		ArrayList x = manAp.managerauth(apVO);
+	}
+	catch(Exception e) {
+		e.printStackTrace();
+	}
+	return "ListofManagers";
+}
+	
 //	public ArrayList manager() {
 //
 //		ManagerLoginDao manAp = new ManagerLoginDao();
@@ -145,6 +156,30 @@ public class ManagerLogin {
 			System.out.println("Username in decline method:"+u);
 			ManagerLoginDao Mandecline = new ManagerLoginDao();
 			boolean dec = Mandecline.decline(u);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void selectmanager(int u) {
+		try {
+			ManagerLoginDao select = new ManagerLoginDao();
+			boolean x = select.SelectManager(u);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String redirect() {
+		return "RequestManager";
+	}
+	
+	public void reqManager(int u_id, int m_id, int amt) {
+		try {
+			ManagerLoginDao req = new ManagerLoginDao();
+			boolean x = req.request(u_id,m_id,amt);
 		}
 		catch(Exception e) {
 			e.printStackTrace();

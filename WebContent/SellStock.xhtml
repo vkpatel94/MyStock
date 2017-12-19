@@ -38,11 +38,13 @@
                     <div class="col-sm-6">
                         <h:form id="purchase">
                             <h:messages style="color: red;"/>
+                            Purchase id: <h:inputText binding="#{Id}" id="id" styleClass="form-control id" value="#{stockApiBean.id}" required="true"/><br />
                             Stock Name: <h:inputText binding="#{purchaseSymbol}" id="symbol" styleClass="form-control purchaseSymbol" value="#{stockApiBean.purchaseSymbol}" required="true"/><br />
-                            Quantity: <h:inputText  id="qty" styleClass="form-control qty" value="#{stockApiBean.qty}" required="true" onkeyup="calculateAmount()"/><br />
-                            Price: <h:inputText binding="#{purchasePrice}" id="price" styleClass="form-control purchasePrice" value="#{stockApiBean.purchasePrice}" required="true"/><br />
+                            Quantity: <h:inputText binding="#{qty}" id="qty" styleClass="form-control qty" value="#{stockApiBean.qty}" required="true" onkeyup="calculateAmount()"/><br />
+                           Purchased In :  <h:inputText binding="#{price}" id="price" styleClass="form-control price" value="#{stockApiBean.price}" required="true"/><br />
+                           Current Price: <h:inputText binding="#{purchasePrice}" id="purchasePrice" styleClass="form-control purchasePrice" value="#{stockApiBean.purchasePrice}" required="true"/><br />
                             Amount: <h:inputText binding="#{amt}" id="amt" styleClass="form-control amt" value="#{stockApiBean.amt}" required="true"/><br />
-                            <h:commandButton styleClass="btn btn-success btn-login-submit" value="Sell" action="#{stockApiBean.createDbRecord(purchaseSymbol.value, purchasePrice.value, qty.value, amt.value)}"/>
+                            <h:commandButton styleClass="btn btn-success btn-login-submit" value="Sell" action="#{stockApiBean.createDbRecordSell(Id.value,purchaseSymbol.value, purchasePrice.value, qty.value, amt.value)}"/>
                         </h:form>
                     </div>
                 </div>

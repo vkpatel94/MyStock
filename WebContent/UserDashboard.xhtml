@@ -26,8 +26,10 @@
                        		    </h1>
                             </h:panelGroup>
                         </span>
-                        <h:commandButton action = "#{login.editusr}" value="Edit Profile" class="btn btn-primary btn-sm" style="margin-right:  10px"> </h:commandButton>  
-                        <h:commandButton action = "#{login.logout}" value="Log Out" class="btn btn-primary btn-sm" style="float: right;margin-bottom:  20px"> </h:commandButton>
+                        <h:commandButton action = "#{login.editusr}" value="Edit Profile" class="btn btn-primary btn-sm" style="float: right;margin-left:  10px"> </h:commandButton>  
+                        <h:commandButton action = "#{login.logout}" value="Log Out" class="btn btn-primary btn-sm" style="float: right;margin-left:  10px"> </h:commandButton>
+                        <h:commandButton value="View Managers" action="#{managerlogin.managerlist}" styleClass="btn btn-primary btn-sm" style="margin-left: 10px" />
+                        <h:commandButton value="Request Managers" action="#{managerlogin.redirect}" styleClass="btn btn-primary btn-sm" style="margin-left: 10px"/>
                     </div>
                 </div>
             </h:form>
@@ -52,6 +54,7 @@
                          <h:commandButton value="Add to Watchlist" action="#{stockApiBean.watchlistRecord}" styleClass="btn btn-primary" style="margin-left: 20px" />
                          <h:commandButton value="View Watchlist" action="#{stockApiBean.viewWatchlist}" styleClass="btn btn-primary" style="margin-left: 20px" />
                            <h:commandButton value="My Stock List" action="#{stockApiBean.myStocklist}" styleClass="btn btn-primary" style="margin-left: 20px" />
+                           <h:commandButton value="View Account History" action="#{stockApiBean.accountHistory}" styleClass="btn btn-primary" style="margin-left: 20px" />
                     </h:form>
                 </div>
 
