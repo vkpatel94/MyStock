@@ -28,38 +28,18 @@
                 <div class="row">
                     <div class="col-sm-10">
                         <h1>
-                            Welcome <h:outputText value="#{sessionScope.username}" />
+                            Sell Stock
                         </h1>
-                        <span style="float:right;"><h:link value="Logout" outcome="index" style="text-align: right;"/></span>
-                    </div>
-                    <div class="col-sm-2">
-                        <a href="#" class="pull-right">
-                            <img title="profile image" class="img-circle img-responsive" src="http://www.gravatar.com/avatar/28fd20ccec6865e2d5f0e1f4446eb7bf?s=100"></img>
-                        </a>
+                       <h:form> <h:commandButton action = "#{login.logout}" value="Log Out" class="btn btn-primary btn-sm" style="float: right;margin-bottom:  20px"> </h:commandButton></h:form>
                     </div>
                 </div>
                 <div class="row">
-                    <!--left col-->
-                    <div class="col-sm-3">
-                        <ul class="list-group">
-                            <li class="list-group-item text-muted">User Tasks</li>
-                            <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span> 2.13.2014</li>
-                            <li class="list-group-item text-right"><span class="pull-left"><strong>Last seen</strong></span> Yesterday</li>
-                            <li class="list-group-item text-right"><span class="pull-left"><strong>Real name</strong></span> Joseph Doe</li>
-                        </ul>
-
-                        <div class="panel panel-default">
-                            <div class="panel-heading">Manager Tasks <i class="fa fa-link fa-1x"></i></div>
-                            <div class="panel-body"><a href="https://bootsnipp.com/snippets/kv2aW" target="_blank">bootsnipp.com</a></div>
-                        </div>
-                    </div>
-
                     <!-- main column -->
                     <div class="col-sm-6">
                         <h:form id="purchase">
                             <h:messages style="color: red;"/>
                             Stock Name: <h:inputText binding="#{purchaseSymbol}" id="symbol" styleClass="form-control purchaseSymbol" value="#{stockApiBean.purchaseSymbol}" required="true"/><br />
-                            Quantity: <h:inputText  id="qty" styleClass="form-control qty" value="#{stockApiBean.qty}" required="true"/><br />
+                            Quantity: <h:inputText  id="qty" styleClass="form-control qty" value="#{stockApiBean.qty}" required="true" onkeyup="calculateAmount()"/><br />
                             Price: <h:inputText binding="#{purchasePrice}" id="price" styleClass="form-control purchasePrice" value="#{stockApiBean.purchasePrice}" required="true"/><br />
                             Amount: <h:inputText binding="#{amt}" id="amt" styleClass="form-control amt" value="#{stockApiBean.amt}" required="true"/><br />
                             <h:commandButton styleClass="btn btn-success btn-login-submit" value="Sell" action="#{stockApiBean.createDbRecord(purchaseSymbol.value, purchasePrice.value, qty.value, amt.value)}"/>

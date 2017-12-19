@@ -280,7 +280,7 @@ public class StockApiBean {
             ResultSet rs = statement.executeQuery();
             this.table3Markup += "";
         	this.table3Markup += "<table class='table table-hover'>";
-            this.table3Markup += "<thead><tr><th>Number</th><th>Stock Symbol</th><th>Close</th></tr></thead>";
+            this.table3Markup += "<thead><tr><th>Number</th><th>Stock Symbol</th><th>Recent Price</th></tr></thead>";
             this.table3Markup+="<tbody>";
            
             while(rs.next()) {
@@ -325,7 +325,7 @@ public class StockApiBean {
         
     }
     
-    public String myStocklist(){
+    public String myStocklist() throws MalformedURLException, IOException{
         try {
 
         	Integer uid = (Integer) FacesContext.getCurrentInstance()
@@ -336,6 +336,7 @@ public class StockApiBean {
             PreparedStatement statement =  con.prepareStatement("SELECT * FROM purchase where uid = "+uid);
 //            statement.setString(1, uid);
             int i=0;
+            String close="";
             //get userid
             
             System.out.println(uid);
@@ -347,14 +348,48 @@ public class StockApiBean {
         	this.table4Markup += "<table class='table table-hover'>";
             this.table4Markup += "<thead><tr><th>Number</th><th>Stock Symbol</th><th>Qty</th><th>Sell</th></tr></thead>";
             this.table4Markup+="<tbody>";
+            
+            
+            
             while(rs.next()) {
-            	System.out.println("Stock symbol:"+rs.getString("stock_symbol"));
-            	System.out.println("Qty:"+rs.getInt("qty"));
+//            	System.out.println("Stock symbol:"+rs.getString("stock_symbol"));
+//            	System.out.println("Qty:"+rs.getInt("qty"));
+            	String symbol = rs.getString("stock_symbol");
+                String interval = "1min";
+                String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=" + interval + "&apikey=" + API_KEY;
+//                
+//                this.table3Markup += "URL::: <a href='" + url + "'>Data Link</a><br>";
+                InputStream inputStream = new URL(url).openStream();
+    //
+//                // convert the json string back to object
+                JsonReader jsonReader = Json.createReader(inputStream);
+                JsonObject mainJsonObj = jsonReader.readObject();
+                for(String key : mainJsonObj.keySet()) {
+                	if (key.equals("Time Series (1min)")) {
+                		JsonObject dataJsonObj = mainJsonObj.getJsonObject(key);
+                		
+                		  for(String subKey : dataJsonObj.keySet())
+                          {
+                			  JsonObject subJsonObj = dataJsonObj.getJsonObject(subKey);
+                			  close=subJsonObj.getString("4. close");
+                			  break;
+                          }
+                	}
+//                		
+                }
+            	
+            	
+            	
                 this.table4Markup += "<tr>"+"<td>"+i+"</td>"+"<td>"+rs.getString("stock_symbol")+"</td>"+"<td>"+rs.getString("qty")+"</td>";
-            	this.table4Markup += "<td><a class='btn btn-success' href='" + path + "/faces/SellStock.xhtml?symbol=" + rs.getString("stock_symbol") + "&qty=" + rs.getInt("qty") + "'>Sell Stock</a></td>";
+            	this.table4Markup += "<td><a class='btn btn-success' href='" + path + "/faces/SellStock.xhtml?symbol=" + rs.getString("stock_symbol") + "&price=" + close + "&qty=" + rs.getInt("qty") + "'>Sell Stock</a></td>";
                 
             	i++;
             }
+            
+            
+            
+            
+            
             this.table4Markup+="</tr>";
             this.table4Markup+="</tbody></table>";
 //            statement.close();

@@ -28,8 +28,9 @@
                 <div class="row">
                     <div class="col-sm-10">
                         <h1>
-                            Welcome <h:outputText value="#{sessionScope.username}" />
+                            Purchase Stock
                         </h1>
+                        <h:form> <h:commandButton action = "#{login.logout}" value="Log Out" class="btn btn-primary btn-sm" style="float: right;margin-bottom:  20px"> </h:commandButton></h:form>
                     </div>
                     <div class="col-sm-2">
                         <a href="#" class="pull-right">

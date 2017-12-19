@@ -4,15 +4,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.faces.context.FacesContext;
+
+//import com.mysql.jdbc.Statement;
 
 import vo.LoginVO;
 import vo.ManagerLoginVO;
 
 public class ManagerLoginDao {
 	ArrayList managerauth;
+	ManagerLoginVO ap;
 Connection con = dbconnection.Open();
 	
 	PreparedStatement p;
@@ -28,6 +32,7 @@ Connection con = dbconnection.Open();
 		    p.setString(1, username);
 		    p.setString(2, password);
 		    ResultSet rs = p.executeQuery();
+		   
 		if(rs.next())
 			{	
 		 	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("mid", rs.getInt("mid"));
@@ -37,6 +42,7 @@ Connection con = dbconnection.Open();
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("commission", rs.getString("commission"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("username", rs.getString("username"));
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("password", rs.getString("password"));
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("approved", rs.getString("approved"));
 		 	
 //		 	Integer mid = Integer.parseInt((String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("mid"));
 //		 	System.out.println(mid);
@@ -56,6 +62,9 @@ Connection con = dbconnection.Open();
 	}
 	
 	public ArrayList managerauth(ManagerLoginVO ap){
+		
+	ArrayList managerlist = new ArrayList();
+		
         try {
         	
             Connection con = dbconnection.Open();
@@ -68,16 +77,17 @@ Connection con = dbconnection.Open();
 //            System.out.println("symbol:" + symbol);
             ResultSet rs = statement.executeQuery();
            
+            
             while(rs.next()) {
             	if(rs.getInt("approved")==0) {
             	System.out.println("Manager Id:"+rs.getInt("mid"));
             	ap.setMid(rs.getInt("mid"));
             	ap.setUsername(rs.getString("username"));
             	ap.setEmail(rs.getString("email"));
-//            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("mid", rs.getString("mid"));
+//             	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("mid", rs.getString("mid"));
 //            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("username", rs.getString("username"));
 //            	FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("email", rs.getString("email"));
-            	managerauth.add(ap);
+            	managerlist.add(ap);
             	}
             }
             System.out.println(managerauth);
@@ -86,7 +96,7 @@ Connection con = dbconnection.Open();
         catch (SQLException e) {
             e.printStackTrace();
         }
-        return managerauth;
+        return managerlist;
         
     }
 	
@@ -168,20 +178,19 @@ Connection con = dbconnection.Open();
 		return false;    
 	}  
 	
-	public boolean approve(ManagerLoginVO apd){  
+	public boolean approve(String user){  
 		//int result = 0;  
 		try{   
 		
-			int mid =  (Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("mid");
-			System.out.println("In update method:"+mid);
-		
+//			int mid =  ap.getMid();
+//			System.out.println("In approve method:"+mid);
+		System.out.println("username in dao method:" +user);
 		Connection con = dbconnection.Open();	 
-		PreparedStatement p;
-		String sql = ("UPDATE manager set approved=? where mid="+mid);
-		p = con.prepareStatement(sql);    
+		Statement p = con.createStatement();
+		p.executeUpdate("UPDATE manager set approved='1' where username = '"+user+"'");    
 	   
-		p.setInt(1, 1);
-		p.executeUpdate();  
+		
+		  
 //		con.close(); 
 //		dbconnection.Close();
 		return true;
@@ -193,5 +202,31 @@ Connection con = dbconnection.Open();
 		}  
 		return false;
 	}
+	
+	public boolean decline(String user){  
+		//int result = 0;  
+		try{   
+		
+//			int mid =  ap.getMid();
+//			System.out.println("In approve method:"+mid);
+		System.out.println("username in dao method:" +user);
+		Connection con = dbconnection.Open();	 
+		Statement p = con.createStatement();
+		p.executeUpdate("DELETE from manager where username = '"+user+"'");    
+	   
+		
+		  
+//		con.close(); 
+//		dbconnection.Close();
+		return true;
+	
+		}
+		
+		catch(Exception e){  
+		e.printStackTrace();  
+		}  
+		return false;
+	}
+
 
 }

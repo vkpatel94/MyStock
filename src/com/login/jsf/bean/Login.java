@@ -15,6 +15,10 @@ import dao.RegistrationDao;
 import dao.dbconnection;
 import vo.LoginVO;
 
+/**
+ * @author vaiku
+ *
+ */
 @ManagedBean(name="login")
 @SessionScoped
 public class Login {

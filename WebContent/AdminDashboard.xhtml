@@ -38,12 +38,12 @@
 		  
 		<h:column>  
 			<f:facet name="header">Approve</f:facet>  
-			<h:commandButton action = "#{managerlogin.approvemanager}" value="Approve" class="btn btn-primary" />    
+			<h:commandButton action = "#{managerlogin.approvemanager(managerlogin.apVO.username)}" value="Approve" class="btn btn-primary" />    
 		</h:column> 
 		 
 		<h:column>  
 			<f:facet name="header">Decline</f:facet>  
-			<h:commandButton action = "#{user.delete(u.id)}" value="Decline" class="btn btn-danger" />   
+			<h:commandButton action = "#{managerlogin.declinemanager(managerlogin.apVO.username)}" value="Decline" class="btn btn-danger" />   
 		</h:column>  
 		</h:dataTable>  
 		  

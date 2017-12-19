@@ -73,6 +73,7 @@ public class ManagerLogin {
 			Boolean auth = access.managerlogon(mloginvo.username, mloginvo.password);
 			mupdVO.refresh();
 			if(auth) {
+			
 //				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", loginvo.getUsername());
 				return "ManagerDashboard";
 			}
@@ -121,10 +122,29 @@ public class ManagerLogin {
 	}
 }
 	
-	public void approvemanager() {
+//	public ArrayList manager() {
+//
+//		ManagerLoginDao manAp = new ManagerLoginDao();
+//		ArrayList x = manAp.managerauth(apVO);
+//		return x;
+//}
+	
+	public void approvemanager(String u) {
 		try {
+			System.out.println("Username in approve method:"+u);
 			ManagerLoginDao approved = new ManagerLoginDao();
-			boolean x = approved.approve(app);
+			boolean approval = approved.approve(u);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void declinemanager(String u) {
+		try {
+			System.out.println("Username in decline method:"+u);
+			ManagerLoginDao Mandecline = new ManagerLoginDao();
+			boolean dec = Mandecline.decline(u);
 		}
 		catch(Exception e) {
 			e.printStackTrace();

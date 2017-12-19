@@ -22,7 +22,7 @@
                         <span style="float:left;">
                             <h:panelGroup rendered="#{not empty login.loginvo.username}">
                                 <h1>
-                          		  Welcome <h:outputText value="#{sessionScope.username}" />
+                          		  User Watchlist
                        		    </h1>
                             </h:panelGroup>
                         </span>  
@@ -32,11 +32,8 @@
             </h:form>
 
             <div class="well">
-                <h1 style="align: center">WatchList</h1>
-
-             
-
-
+                
+                
                 <h:panelGroup rendered="#{not empty stockApiBean.table3Markup}">
                     <h:outputText value="#{stockApiBean.table3Markup}" escape="false" styleClass="preformatted" />
                 </h:panelGroup>
